@@ -12,7 +12,7 @@ import java.lang.reflect.Type
  * <br>createBy Gw
  * <br>createTime: 2021/6/21 18:01
  */
-internal class LessonPresenter(
+class LessonPresenter(
     private val activity: LessonActivity
 ) {
 
