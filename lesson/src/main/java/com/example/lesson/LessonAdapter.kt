@@ -14,7 +14,7 @@ import java.util.ArrayList
  * <br>createBy Gw
  * <br>createTime: 2021/6/21 17:43
  */
-class LessonAdapter : RecyclerView.Adapter<LessonAdapter.LessonViewHolder>() {
+internal class LessonAdapter : RecyclerView.Adapter<LessonAdapter.LessonViewHolder>() {
     private var list: List<Lesson> = ArrayList()
 
     fun updateAndNotify(list: List<Lesson>) {
