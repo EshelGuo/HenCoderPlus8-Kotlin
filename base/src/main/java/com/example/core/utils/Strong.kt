@@ -28,7 +28,7 @@ fun<T> Any.nonnull(any:T?, def:T): T{
 class Strong {
 
     class NonNull<T>(val value: T?) {
-        inline fun or(block: () -> Any){
+        inline infix fun or(block: () -> Any){
             if(value == null){
                 block.invoke()
             }
@@ -36,7 +36,7 @@ class Strong {
     }
 
     class Nullable<T>(val value: T?) {
-        inline fun or(block: (T) -> Any){
+        inline infix fun or(block: (T) -> Any){
             value?.let { block.invoke(it) }
         }
     }

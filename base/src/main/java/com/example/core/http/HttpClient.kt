@@ -58,7 +58,7 @@ object HttpClient : OkHttpClient(){
 
         nonnull(result) {
             entityCallback.onSuccess(it)
-        }.or {
+        } or {
             entityCallback.onFailure("类型错误")
         }
     }
