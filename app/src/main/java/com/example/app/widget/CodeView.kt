@@ -35,16 +35,17 @@ class CodeView @JvmOverloads constructor(
     )
 
     init {
+        paint.run {
+            isAntiAlias = true
+            style = Paint.Style.STROKE
+            color = getContext().getColor(R.color.colorAccent)
+            strokeWidth = 6f.dp2px()
+        }
+
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
         gravity = Gravity.CENTER
         setBackgroundColor(context.getColor(R.color.colorPrimary))
         setTextColor(Color.WHITE)
-
-        paint.isAntiAlias = true
-        paint.style = Paint.Style.STROKE
-        paint.color = getContext().getColor(R.color.colorAccent)
-        paint.strokeWidth = dp2px(6f)
-
         updateCode()
     }
 

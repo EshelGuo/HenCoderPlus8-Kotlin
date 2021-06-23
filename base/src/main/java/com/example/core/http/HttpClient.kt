@@ -1,7 +1,7 @@
 package com.example.core.http
 
-import com.example.core.utils.nonnull
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.*
 import java.io.IOException
 import java.lang.reflect.Type
@@ -14,52 +14,53 @@ object HttpClient : OkHttpClient(){
 
     var gson:Gson = Gson()
 
-    private fun <T> convert(json:String?, type:Type):T?{
-        //fromJson返回值可能为空
-        try {
-            return gson.fromJson(json, type)
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
-        return null
+    fun <T> get(path:String, clazz:Class<T>):HttpListener<T>{
+        return get(path, type = clazz)
     }
 
-    fun <T> get(path:String, type:Type, callback:EntityCallback<T>) {
+    fun <T> get(path:String, typeToken:TypeToken<T>):HttpListener<T>{
+        return get(path, typeToken.type)
+    }
+
+    private fun <T> get(path:String, type:Type):HttpListener<T> {
         val request:Request = Request.Builder()
             .url("https://api.hencoder.com/$path")
             .build()
-
         val call = newCall(request)
+
+        val listener = HttpListener<T>()
 
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 when(response.code()){
-                    in 200..299 -> dispatchCallback(response, type, callback)
-                    in 400..499 -> callback.onFailure("客户端错误")
-                    in 500..599 -> callback.onFailure("服务器错误")
-                    else -> callback.onFailure("未知错误")
+                    in 200..299 -> dispatchCallback(response, type, listener)
+                    in 400..499 -> listener.failed?.invoke("客户端错误")
+                    in 500..599 -> listener.failed?.invoke("服务器错误")
+                    else -> listener.failed?.invoke("未知错误")
                 }
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                callback.onFailure("网络异常")
+                listener.failed?.invoke("网络异常")
             }
 
         })
+
+        return listener
     }
 
     private fun <T> dispatchCallback(
         response: Response,
         type: Type,
-        entityCallback: EntityCallback<T>
+        listener: HttpListener<T>
     ) {
         val json: String? = response.body()?.string()
-        val result: T? = convert(json, type) as T?
+        val result: T? = gson.fromJson(json, type) as T?
 
-        nonnull(result) {
-            entityCallback.onSuccess(it)
-        } or {
-            entityCallback.onFailure("类型错误")
+        result?.also {
+            listener.success?.invoke(it)
+        } ?: run {
+            listener.failed?.invoke("类型错误")
         }
     }
 }

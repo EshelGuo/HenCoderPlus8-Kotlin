@@ -1,34 +1,21 @@
 package com.example.lesson.entity
 
+import androidx.annotation.ColorRes
+import com.example.lesson.R
+
 /**
  * <br>createBy Gw
  * <br>createTime: 2021/6/21 17:32
  */
-//Gson解析不支持枚举类型
-//https://stackoverflow.com/questions/61675470/gson-expected-a-string-but-was-begin-object-at-line-1-column-3-path-0
-/*enum*/ class Lesson(
+data class Lesson @JvmOverloads constructor(
     val date: String? = null,
     val content: String? = null,
-    val state: State? = null){
-
-    constructor() : this(null, null, null) {
-    }
-    enum class State{
-        PLAYBACK {
-            override fun stateName(): String {
-                return "有回放"
-            }
-        },LIVE {
-            override fun stateName(): String {
-                return "正在直播"
-            }
-        },WAIT {
-            override fun stateName(): String {
-                return "等待中"
-            }
-        };
-
-        abstract fun stateName(): String
+    val state: State? = null
+){
+    enum class State(val stateName:String, @ColorRes val colorRes:Int){
+        PLAYBACK("有回放", R.color.playback),
+        LIVE("正在直播", R.color.live),
+        WAIT("等待中", R.color.wait)
     }
 }
 

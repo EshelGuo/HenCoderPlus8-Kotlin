@@ -2,6 +2,7 @@ package com.example.core
 
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import java.util.*
@@ -21,10 +22,14 @@ abstract class BaseViewHolder(itemView: View) : ViewHolder(itemView) {
             view = itemView.findViewById(id)
             cache[id] = view
         }
-        return view as T?
+        return view as? T
     }
 
     protected fun setText(@IdRes id: Int, text: String?) {
-        (getView<View>(id) as TextView).text = text
+        (getView<TextView>(id))?.text = text
+    }
+
+    protected fun setBackgroundColor(@IdRes id: Int, @ColorInt color: Int) {
+        (getView<View>(id))?.setBackgroundColor(color)
     }
 }
